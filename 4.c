@@ -49,9 +49,6 @@ done
 echo
 done
 
-// Implement Priority Non-preemptive scheduling algorithm by defining
-// process structure. 
-
 #include <stdio.h>
 #include <stdlib.h>
 typedef struct process
@@ -106,8 +103,7 @@ full BT.
  printf("| Idle till %d", idleTime);
  }
  idleTime = 0;
- curTime += p[minIndex].BT;
-p[minIndex].CT = curTime;
+ curTime += p[minIndex].BT;p[minIndex].CT = curTime;
  p[minIndex].TAT = p[minIndex].CT - p[minIndex].AT;
  p[minIndex].WT = p[minIndex].TAT - p[minIndex].BT;
  total_TAT += p[minIndex].TAT;
