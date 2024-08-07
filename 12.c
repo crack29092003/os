@@ -1,31 +1,21 @@
- // Write a shell program to find the largest of three numbers
+//12(a)---- largest of three numbers------------
 #!/bin/bash
-
-# Prompt the user to enter three numbers
-echo "Enter first number: "
+echo "ENTER THREE NUMBERS"
 read num1
-echo "Enter second number: "
 read num2
-echo "Enter third number: "
 read num3
-
-# Determine the largest number
-if [ "$num1" -ge "$num2" ] && [ "$num1" -ge "$num3" ]; then
-    largest=$num1
-elif [ "$num2" -ge "$num1" ] && [ "$num2" -ge "$num3" ]; then
-    largest=$num2
+if [[ $num1 > $num2 ]]
+then largest=$num1
 else
-    largest=$num3
+largest=$num2
 fi
+if [[ $largest < $num3 ]]
+then largest=$num3
+fi
+echo "THE LARGEST OF THREE NUMBERS IS $largest"
 
-# Print the largest number
-echo "The largest number is: $largest"
 
-//   Write a program that implements solution to Readers-Writers problem
-// using mutex and semaphores. 
-
-//   /to compile:  gcc filename.c -pthread
-
+//12(b)-----------reader-writer-------------
 #include <pthread.h>
 #include <semaphore.h>
 #include <stdio.h>
@@ -99,5 +89,9 @@ int main()
 //int sem_destroy(sem_t *sem)-->destroys the semaphore; no threads should be waiting on the semaphore if its destruction is to succeed.
     return 0;
   }
-    
 
+
+//execution-----:--------
+//gedit -s rw.c
+//gcc rw.c -pthread
+// ./a.out
