@@ -1,17 +1,31 @@
-//-------------use of I/O system calls for console//
 #include <unistd.h>
 #include <stdio.h>
-#define BUFFER_SIZE 30
-int main() {
-// ssize_t read(int fd, void *buf, size_t count);
-// ssize_t write(int fd, const void *buf, size_t count);
-char buffer[BUFFER_SIZE];
-int n = read(0, buffer, BUFFER_SIZE); // 0 is the file discriptor for stdin
-printf("Number of charecters read: %d\n", n);
-write(1, buffer, n); // 1 is the file discriptor for stdout
-return 0;
-}
 
+#define BUFFER_SIZE 30
+
+int main() {
+    char buffer[BUFFER_SIZE];
+    
+    // Read input from the standard input (stdin)
+    ssize_t n = read(0, buffer, BUFFER_SIZE); // 0 is the file descriptor for stdin
+    
+    if (n == -1) {
+        perror("Read error");
+        return 1;
+    }
+    
+    printf("Number of characters read: %zd\n", n);
+    
+    // Write the buffer content to the standard output (stdout)
+    ssize_t written = write(1, buffer, n); // 1 is the file descriptor for stdout
+    
+    if (written == -1) {
+        perror("Write error");
+        return 1;
+    }
+    
+    return 0;
+}
 
 
 #include <stdio.h>
