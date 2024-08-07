@@ -1,4 +1,4 @@
-//Write a shell program to generate prime numbers in a given range 
+//Write a shell program to generate prime numbers in a given range
 
 #!/bin/bash
 # Program to generate the prime numbers of a given range
@@ -23,8 +23,10 @@ fi
 flag=0
 done
 
+//priority preemptive-------------------------
+
 // Implement Priority Pre-emptive scheduling algorithm by defining
-// process structure. 
+// process structure.
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct process {
@@ -49,6 +51,9 @@ void main() {
  minIndex = -1;
  minPriority = 9999;
  for(int i=0; i<n; i++) {
+ if(p[i].AT <= curTime && p[i].BT>0) {
+ if(p[i].priority < minPriority || (p[i].priority == minPriority && p[i].AT <
+p[minIndex].AT)) {
  if(p[i].AT <= curTime && p[i].BT>0) {
  if(p[i].priority < minPriority || (p[i].priority == minPriority && p[i].AT <
 p[minIndex].AT)) {
