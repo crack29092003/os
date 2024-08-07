@@ -1,111 +1,105 @@
-//Check whether a given number is palindrome or not:
-#!/bin/bash
-# Program to find if a given string or number is palindrome or not
-echo "Enter the string to be checked: "
-read str
-length=${#str}
-for ((i=length-1; i>=0; i--))
-do
-reverse=$reverse${str:$i:1}
-done
-if [[ $reverse == "$str" ]]
-then
-echo "The string $str is a palindrome"
-else
-echo "The string $str is not a palindrome"
-fi
-// Implement SJF Pre-emptive scheduling algorithm by defining process
-// structure
-// FCFS scheduling algorithm
-#include<stdio.h>
-typedef struct node{
-    int processId;
-    int arrivalTime;
-    int burstTime;
-    int completionTime;
-    int turnAroundTime;
-    int waitingTime;
-    int responseTime;
-} Process;
+#check whether a given no. is palindrome or not
 
-void fcfs(Process[],int);
+#!/bin/bash
+echo "Enter a string: "
+read str1
+length=${#str1}
+for((i=$length-1;i>=0;i--))
+do
+ str2=$str2${str1:$i:1}
+done
+echo $str2
+if [ $str1 = $str2 ]
+then
+ echo "$str1 is palindrome"
+else
+ echo "$str1 is not a palindrome"
+fi
+echo "$str1 and $str2"
+
+//zombie------------------------------------------------
+//Program to demonstrate the creation of zombie process.
+
+#include<sys/types.h>
+#include<unistd.h>
+#include<stdio.h>
+#include<stdlib.h>
 int main()
 {
-    int n;
-    printf("Enter the number of processes: ");
-    scanf("%d", &n);
-     Process processes[n];
- // Accept process details from the user
-    for (int i = 0; i < n; i++) 
-    {
-        printf("Process %d\n", i + 1);
-        printf("Enter Arrival Time: ");
-        scanf("%d", &processes[i].arrivalTime);
-        printf("Enter Burst Time: ");
-        scanf("%d", &processes[i].burstTime);
-        processes[i].processId = i + 1;
-        printf("\n");
-    }
-    // Sort processes based on arrival time (if needed)
-       for (int i = 0; i < n - 1; i++)
-       {
-           for (int j = 0; j < n - i - 1; j++) 
-           {
-               if (processes[j].arrivalTime > processes[j + 1].arrivalTime) 
-               {
-                   Process temp = processes[j];
-                   processes[j] = processes[j + 1];
-                   processes[j + 1] = temp;
-               }
-           }
-       } // sorting over
-    	fcfs(processes,n);
-return 0;
+ pid_t child_pid,my_pid,parent_pid;
+ int i=10;
+ child_pid=fork();
+ if(child_pid<0)
+ {
+  printf("Fork failed.Exiting!\n");
+  exit(0);
+ }
+ if(child_pid==0)
+ {
+  //child process
+  printf("[CHILD]this is the child process.\n");
+  my_pid=getpid();
+  parent_pid=getppid();
+  printf("[CHILD]My pid is %d\n",my_pid);
+  printf("[CHILD]My parent's pid is %d\n",parent_pid);
+  printf("[CHILD]Exiting.\n");
+  exit(0);
+ }
+ else
+ {
+  //Parent process
+  printf("[PARENT]This is the parent process.\n");
+  my_pid=getpid();
+  parent_pid=getppid();
+  printf("[PARENT]My pid is %d\n",my_pid);
+  printf("[PARENT]My parent's pid is %d\n",parent_pid);
+  printf("[PARENT]Sleeping for 10 seconds.\n");
+  sleep(10);
+  printf("[PARENT]child pid= %d has ended,but it has an entry in process table.\n"
+  "[PARENT]It is a zombie process.\n",child_pid);
+ }
+ return 0;
 }
 
-void fcfs(Process processes[], int n)
+//orphan-----------------------------------------------
+//Program to demonstrate the creation of orphan process.
+
+#include<sys/types.h>
+#include<unistd.h>
+#include<stdio.h>
+#include<stdlib.h>
+int main()
 {
-   int elapsedTime = 0;
-   float avgWaitingTime = 0;
-   float avgTurnAroundTime = 0;
-   float avgResponseTime = 0;
-   int totalWaitingTime = 0;
-   int totalTurnAroundTime = 0;
-   int totalResponseTime = 0;
-      
-    printf("\nGantt chart\n");  
-    for(int i = 0; i<n; i++)
-    {
-        if(processes[i].arrivalTime > elapsedTime) // to take care of the idle time
-          elapsedTime = elapsedTime + (processes[i].arrivalTime - elapsedTime);
-        
-        int temp = elapsedTime; 
-        processes[i].responseTime = elapsedTime - processes[i].arrivalTime;  
-        elapsedTime+=processes[i].burstTime;
-        processes[i].completionTime = elapsedTime;
-        processes[i].turnAroundTime = processes[i].completionTime - processes[i].arrivalTime;
-        processes[i].waitingTime = processes[i].turnAroundTime - processes[i].burstTime;
-        printf("|(%d)  P%d  (%d)",temp,processes[i].processId,elapsedTime);
-    }
-    
-    printf("|\n");
-    printf("Observation Table\nPID \tAT \t BT \tCT \tTT \tWT \tRT \n");
-     
-    for (int i = 0; i < n; i++) {
-        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n", processes[i].processId, processes[i].arrivalTime,
-               processes[i].burstTime,processes[i].completionTime,processes[i].turnAroundTime, processes[i].waitingTime, processes[i].responseTime);
-               
-        totalTurnAroundTime+= processes[i].turnAroundTime;
-        totalWaitingTime+= processes[i].waitingTime;
-        totalResponseTime+=processes[i].responseTime;       
-    }
-       
-    avgTurnAroundTime = (float)totalTurnAroundTime/n;
-    avgWaitingTime    = (float)totalWaitingTime/n;
-    avgResponseTime   = (float)totalResponseTime/n;
-    
-    printf("\nAverage Waiting Time: %.2lf\n", avgWaitingTime);
-    printf("Average Turnaround Time: %.2lf\n", avgTurnAroundTime);
-    printf("Average Response Time: %.2lf\n", avgResponseTime);
+ pid_t child_pid,my_pid,parent_pid;
+ int i=10;
+ child_pid=fork();
+ if(child_pid<0)
+ {
+  printf("Fork failed.Exiting!\n");
+  exit(0);
+ }
+ if(child_pid==0)
+ {
+  //child process
+  printf("[CHILD]this is the child process.\n");
+  my_pid=getpid();
+  parent_pid=getppid();
+  printf("[CHILD]My pid is %d\n",my_pid);
+  printf("[CHILD]My parent's pid is %d\n",parent_pid);
+  printf("[CHILD]Sleeping for 10 seconds.\n");
+  sleep(10);
+  printf("[CHILD]My parent ended.So I am an orphan process adopted by init process.\n");
+ }
+ else
+ {
+  //Parent process
+  printf("[PARENT]This is the parent process.\n");
+  my_pid=getpid();
+  parent_pid=getppid();
+  printf("[PARENT]My pid is %d\n",my_pid);
+  printf("[PARENT]My parent's pid is %d\n",parent_pid);
+  printf("[PARENT]Exiting.\n");
+  exit(0);
+ }
+ return 0;
 }
-
