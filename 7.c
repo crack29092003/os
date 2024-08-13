@@ -1,33 +1,24 @@
-//Write a program to simulate grep command using system calls-----
-#include <stdio.h>
-#include <string.h>
-
-int main() {
-    char fn[100], pat[100], temp[200];
-    FILE *fp;
-
-    printf("Enter file name: ");
-    scanf("%99s", fn);
-
-    printf("Enter pattern to be searched: ");
-    scanf("%99s", pat);
-
-    fp = fopen(fn, "r");
-    if (fp == NULL) {
-        perror("Error opening file");
-        return 1;
-    }
-
-    while (fgets(temp, sizeof(temp), fp) != NULL) {
-        if (strstr(temp, pat) != NULL) {
-            printf("%s", temp);
-        }
-    }
-
-    fclose(fp);
-    return 0;
-}
-
+// Simulation of "grep" command 
+  #include<stdio.h> 
+  #include<string.h> 
+  void main() 
+  { 
+  char fn[10],pat[10],temp[200]; 
+  FILE *fp; 
+  printf("Enter file name\n"); 
+  scanf("%s",fn); 
+  printf("Enter pattern to be searched\n"); 
+  scanf("%s",pat); 
+  fp=fopen(fn,"r"); 
+  while(!feof(fp)) 
+  { 
+  
+  fgets(temp,100,fp); 
+  if(strstr(temp,pat))//finds the first occurrence of the substring in the string 
+    printf("%s",temp); 
+  } 
+  fclose(fp); 
+  }
 //ii) Using shmget
 //parent.c:
 #include <sys/types.h>
