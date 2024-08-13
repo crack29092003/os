@@ -50,79 +50,120 @@ echo
 done
 
 
-//non-preemtive--------------------------------------------------------------------
-//Implement the following CPU scheduling algorithm by defining the process structure
+// PRIORITY NON-PREEMPTIVE scheduling algorithm
 
-#include<stdio.h>
-#include<stdlib.h>
-typedef struct process
+#include <stdio.h>
+
+typedef struct {
+    int processId;
+    int arrivalTime;
+    int burstTime;
+    int priority;
+    int completionTime;
+    int waitingTime;
+    int turnAroundTime;
+    int finished;
+    int responseTime;
+} Process;
+
+void priorityNP(Process[], int);
+
+int main()
 {
- int Id,AT,BT,CT,TAT,WT,isCompl,priority;
-}pro;
+    int n;
 
-pro p[15];
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
 
-void main()
-{
- int n,total_WT=0,total_TAT=0,idleTime=0;
- float avg_WT=0,avg_TAT=0;
- printf("\nEnter the number of processes: \n");
- scanf("%d",&n);
- printf("\nEnter the arrival Time,burst Time and priority of the process: \n");
- printf("AT BT P\n");
- for(int i=0;i<n;i++)
- {
-  p[i].Id=(i+1);
-  scanf("%d%d%d",&p[i].AT,&p[i].BT,&p[i].priority);
-  p[i].isCompl=0;
- }
- int minIndex,minPriority,completed=0,curTime=0;
- printf("\nGantt Chart: \n\n");
- while(completed!=n)
- {
-  minIndex=-1;
-  minPriority=9999;
-  for(int i=0;i<n;i++)
-  {
-   if(p[i].AT<=curTime&&p[i].isCompl==0)
-   {
-    if(p[i].priority<minPriority||(p[i].priority==minPriority&&p[i].AT<p[minIndex].AT));
-    {
-     minPriority=p[i].priority;
-     minIndex=i;
+    Process processes[n];
+
+    for (int i = 0; i < n; i++) {
+        printf("Process %d\n", i + 1);
+        printf("Enter Arrival Time: ");
+        scanf("%d", &processes[i].arrivalTime);
+        printf("Enter Burst Time: ");
+        scanf("%d", &processes[i].burstTime);
+        printf("Enter Priority: ");
+        scanf("%d", &processes[i].priority);
+        printf("\n");
+        processes[i].processId = i + 1;
+        processes[i].finished = 0;
     }
-   }
-  }
-  if(minIndex==-1)
-  {
-   curTime++;
-   idleTime++;
-  }
-  else
-  {
-   if(idleTime>0)
-   {
-    printf("|Idle Till %d",idleTime);
-   }
-   idleTime=0;
-   curTime+=p[minIndex].BT;
-   p[minIndex].CT=curTime;
-   p[minIndex].TAT=p[minIndex].CT-p[minIndex].AT;
-   p[minIndex].WT=p[minIndex].TAT-p[minIndex].BT;
-   total_TAT+=p[minIndex].TAT;
-   total_WT+=p[minIndex].WT;
-   p[minIndex].isCompl=1;
-   completed++;
-   printf("|P%d(%d)%d",p[minIndex].Id,p[minIndex].BT,p[minIndex].CT);
-  }
- }
- printf("\n");
- avg_TAT=(float)total_TAT/n;
- avg_WT=(float)total_WT/n;
- printf("\nPID\tAT\tBT\tCT\tTAT\tWT\tP\n");
- for(int i=0;i<n;i++)
- {
-  printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n",p[i].Id,p[i].AT,p[i].BT,p[i].CT,p[i].TAT,p[i].WT,p[i].priority);
- }
- printf("\nAverage TAT=%.2f\nAverage WT=%.2f\n",avg_TAT,avg_WT);
+    
+    priorityNP(processes, n);
+    
+    return 0;
+}
+
+void priorityNP(Process processes[], int n)
+{
+    int exec;
+    float avgTurnAroundTime = 0;
+    float avgWaitingTime = 0;
+    float avgResponseTime = 0;
+    int totalTurnAroundTime = 0;
+    int totalWaitingTime = 0;
+    int totalResponseTime = 0;
+    int elapsedTime = 0;
+    int finishedProcesses = n; // till all the processes are over
+    
+    printf("\nGantt chart\n");
+    
+    while (finishedProcesses) {
+        // Find the highest priority process that has arrived and not finished
+        exec = -1;
+        int lowestPriority = 9999;
+        for (int i = 0; i < n; i++) {
+            if (processes[i].arrivalTime <= elapsedTime && !processes[i].finished) // process has arrived, but has not been executed
+            {
+                if (processes[i].priority < lowestPriority) // this process has more priority than the 'exec' assigned priority, so we'll update the 'exec' 
+                {
+                    exec = i;
+                    lowestPriority = processes[i].priority;
+                }
+            }
+        }
+        
+        if (exec == -1)
+        {
+            // No process available to execute, increment the elapsed time
+            printf("|(%d)*(%d)",elapsedTime,elapsedTime+1);
+            elapsedTime++;
+        } 
+        
+        else 
+        {
+            // Execute the selected process
+            int temp = elapsedTime;
+            processes[exec].responseTime = elapsedTime - processes[exec].arrivalTime;
+            elapsedTime += processes[exec].burstTime;
+            processes[exec].completionTime = elapsedTime;
+            processes[exec].finished = 1;
+            processes[exec].turnAroundTime = processes[exec].completionTime - processes[exec].arrivalTime;
+            processes[exec].waitingTime = processes[exec].turnAroundTime - processes[exec].burstTime;
+            finishedProcesses--;
+            printf("|(%d) P%d (%d)",temp,processes[exec].processId,elapsedTime);
+        }
+    }
+    printf("|\n\n");
+    
+    
+   printf("Observation Table\nPr \tPID \tAT \t BT \tCT \tTT \tWT \tRT \n");
+   
+   for (int i = 0; i < n; i++) {
+        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",processes[i].priority, processes[i].processId, processes[i].arrivalTime,
+               processes[i].burstTime,processes[i].completionTime,processes[i].turnAroundTime, processes[i].waitingTime, processes[i].responseTime);
+                         
+        totalTurnAroundTime+= processes[i].turnAroundTime;
+        totalWaitingTime+= processes[i].waitingTime;
+        totalResponseTime+=processes[i].responseTime;       
+    }
+   
+    avgTurnAroundTime = (float)totalTurnAroundTime/n;
+    avgWaitingTime    = (float)totalWaitingTime/n;
+    avgResponseTime   = (float)totalResponseTime/n;
+    
+    printf("\nAverage Waiting Time: %.2lf\n", avgWaitingTime);
+    printf("Average Turnaround Time: %.2lf\n", avgTurnAroundTime);
+    printf("Average Response Time: %.2lf\n", avgResponseTime);
 }
